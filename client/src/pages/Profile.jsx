@@ -44,12 +44,12 @@ const Profile = () => {
         setLoading(true);
         setStatus('');
         try {
-            await updateProfile({
-                name: form.name,
-                email: form.email,
-                avatar: form.avatar,
-                password: form.password || undefined,
-                interests: form.interests
+                await updateProfile({
+                    name: form.name,
+                    email: form.email,
+                    avatar: form.avatar,
+                    password: form.password || undefined,
+                    interests: form.interests
                     .split(',')
                     .map((i) => i.trim())
                     .filter(Boolean),

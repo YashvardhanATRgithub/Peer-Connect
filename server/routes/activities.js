@@ -3,12 +3,17 @@ const router = express.Router();
 const Activity = require('../models/Activity');
 const { protect } = require('../middleware/auth');
 
-// @desc    Get all activities
+// @desc    Get all activities (filtered by college)
 // @route   GET /api/activities
-// @access  Public
+// @access  Public (requires college query or user)
 router.get('/', async (req, res) => {
     try {
-        const activities = await Activity.find({})
+        const college = req.query.college;
+        if (!college) {
+            return res.status(400).json({ message: 'College is required to view activities' });
+        }
+
+        const activities = await Activity.find({ college })
             .populate('creator', 'name avatar')
             .sort({ date: 1 });
         res.json(activities);
@@ -34,6 +39,7 @@ router.post('/', protect, async (req, res) => {
             capacity,
             creator: req.user._id,
             participants: [req.user._id], // Creator joins automatically? Maybe. Let's say yes.
+            college: req.user.college,
         });
 
         const createdActivity = await activity.save();

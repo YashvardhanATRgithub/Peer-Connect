@@ -15,8 +15,12 @@ const Landing = () => {
 
     useEffect(() => {
         const load = async () => {
+            if (!user?.college) {
+                setLoading(false);
+                return;
+            }
             try {
-                const { data } = await api.get('/activities');
+                const { data } = await api.get('/activities', { params: { college: user.college } });
                 setActivities(data);
             } catch (err) {
                 console.error('Failed to load activities', err);
@@ -25,7 +29,7 @@ const Landing = () => {
             }
         };
         load();
-    }, []);
+    }, [user]);
 
     const filtered = useMemo(() => {
         if (!search.trim()) return activities;
@@ -103,26 +107,33 @@ const Landing = () => {
                             </div>
                         </div>
 
+                        {!user && (
+                            <p className="text-sm text-slate-500">Log in to see activities from your college.</p>
+                        )}
                         {loading ? (
                             <p className="text-sm text-slate-500">Loading activities...</p>
                         ) : (
-                            <div className="flex flex-wrap gap-2">
-                                {Array.from(new Set(activities.map((a) => a.category))).map((cat) => (
-                                    <span key={cat} className="px-3 py-2 rounded-full border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-700">
-                                        {cat}
-                                    </span>
-                                ))}
-                            </div>
+                            user && (
+                                <div className="flex flex-wrap gap-2">
+                                    {Array.from(new Set(activities.map((a) => a.category))).map((cat) => (
+                                        <span key={cat} className="px-3 py-2 rounded-full border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-700">
+                                            {cat}
+                                        </span>
+                                    ))}
+                                </div>
+                            )
                         )}
                     </div>
 
                     <div className="relative">
                         <div className="absolute -top-6 -left-6 h-full w-full rounded-3xl bg-primary/5" />
                         <div className="relative rounded-3xl border border-slate-200 bg-white shadow-lg p-4 space-y-4">
-                            {visible.length === 0 && !loading && (
-                                <p className="text-sm text-slate-500 px-2 py-4">No activities yet. Create the first one!</p>
+                            {(!user || visible.length === 0) && !loading && (
+                                <p className="text-sm text-slate-500 px-2 py-4">
+                                    {user ? 'No activities yet. Create the first one!' : 'Log in to see activities from your college.'}
+                                </p>
                             )}
-                            {visible.map((item, idx) => (
+                            {user && visible.map((item, idx) => (
                                 <div key={item._id} className="flex gap-3 p-3 rounded-2xl border border-slate-200 hover:border-primary/40 hover:shadow-md transition">
                                     <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
                                         {idx + 1}

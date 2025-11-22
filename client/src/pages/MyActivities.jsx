@@ -12,7 +12,9 @@ const MyActivities = () => {
 
     const fetchActivities = async () => {
         try {
-            const { data } = await api.get('/activities');
+            const params = {};
+            if (user?.college) params.college = user.college;
+            const { data } = await api.get('/activities', { params });
             // Filter client-side for now since we didn't make a specific endpoint
             const myActivities = data.filter(a => {
                 const getId = (p) => (typeof p === 'string' ? p : p?._id?.toString());

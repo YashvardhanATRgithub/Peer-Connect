@@ -16,7 +16,9 @@ const Dashboard = () => {
 
     const fetchActivities = async () => {
         try {
-            const { data } = await api.get('/activities');
+            const params = {};
+            if (user?.college) params.college = user.college;
+            const { data } = await api.get('/activities', { params });
             setActivities(data);
         } catch (error) {
             console.error('Failed to fetch activities', error);
