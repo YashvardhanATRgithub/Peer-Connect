@@ -37,33 +37,38 @@ router.post('/register', async (req, res) => {
 
         const userExists = await User.findOne({ email });
 
-        if (userExists) {
+        if (userExists && userExists.emailVerified) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        const user = await User.create({
-            name,
-            email,
-            password,
-            college,
-            emailVerified: false,
-        });
-
-        if (user) {
-            const verifyToken = jwt.sign({ id: user._id, purpose: 'verify' }, process.env.JWT_SECRET, { expiresIn: '1d' });
-            const appBase = process.env.APP_BASE_URL || `${req.protocol}://${req.get('host')}`;
-            const verifyLink = `${appBase}/api/auth/verify/${verifyToken}`;
-            try {
-                await sendVerificationEmail({ to: user.email, link: verifyLink });
-            } catch (err) {
-                console.error('Email send failed', err.message);
-            }
-            res.status(201).json({
-                message: 'Verification email sent. Please verify to activate your account.',
-            });
+        let user = userExists;
+        if (userExists && !userExists.emailVerified) {
+            // Update password/college and resend verification
+            userExists.password = password;
+            userExists.college = college;
+            userExists.emailVerified = false;
+            user = await userExists.save();
         } else {
-            res.status(400).json({ message: 'Invalid user data' });
+            user = await User.create({
+                name,
+                email,
+                password,
+                college,
+                emailVerified: false,
+            });
         }
+
+        const verifyToken = jwt.sign({ id: user._id, purpose: 'verify' }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const appBase = process.env.APP_BASE_URL || `${req.protocol}://${req.get('host')}`;
+        const verifyLink = `${appBase}/api/auth/verify/${verifyToken}`;
+        try {
+            await sendVerificationEmail({ to: user.email, link: verifyLink });
+        } catch (err) {
+            console.error('Email send failed', err.message);
+        }
+        res.status(201).json({
+            message: 'Verification email sent. Please verify to activate your account.',
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

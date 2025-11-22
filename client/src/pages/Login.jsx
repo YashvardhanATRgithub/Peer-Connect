@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
+import BackgroundVideo from '../components/BackgroundVideo';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -26,8 +27,9 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 py-14 bg-muted">
-            <div className="w-full max-w-md">
+        <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 py-14">
+            <BackgroundVideo overlay="bg-white/70" />
+            <div className="relative w-full max-w-md">
                 <div className="mb-6 text-center">
                     <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1 text-xs font-semibold text-primary border border-slate-200 shadow-sm">
                         Welcome back

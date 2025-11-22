@@ -4,7 +4,7 @@ import Button from '../components/ui/Button';
 import { Users, Calendar, MapPin, ArrowRight, Search } from 'lucide-react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
-import BackImg from '../../Assets/BackImg.png';
+import BackgroundVideo from '../components/BackgroundVideo';
 
 const Landing = () => {
     const [activities, setActivities] = useState([]);
@@ -60,17 +60,9 @@ const Landing = () => {
     const year = new Date().getFullYear();
 
     return (
-        <div
-            className="bg-white"
-            style={{
-                backgroundImage: `linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.7)), url(${BackImg})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center center',
-                backgroundRepeat: 'no-repeat',
-                backgroundAttachment: 'fixed',
-            }}
-        >
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="relative min-h-screen overflow-hidden">
+            <BackgroundVideo overlay="bg-white/70" />
+            <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
                 {/* Hero */}
                 <div className="grid lg:grid-cols-2 gap-10 items-center pt-12 lg:pt-16">
                     <div className="space-y-6">
@@ -185,13 +177,17 @@ const Landing = () => {
                         <Button
                             variant="secondary"
                             size="lg"
-                            className="bg-white text-primary font-bold px-6 py-3 rounded-full"
+                            className="bg-white text-primary font-bold px-6 py-3 rounded-full shadow-md hover:bg-white hover:text-primary hover:shadow-lg border border-white/60"
                             onClick={() => navigate(user ? '/create-activity' : '/signup')}
                         >
                             Create event
                         </Button>
                         <Link to="/dashboard">
-                            <Button variant="ghost" size="lg" className="bg-primaryDark text-white border border-white/30 rounded-full px-6 py-3">
+                            <Button
+                                variant="ghost"
+                                size="lg"
+                                className="bg-transparent text-white border border-white/80 rounded-full px-6 py-3 hover:bg-white/20"
+                            >
                                 Browse events
                             </Button>
                         </Link>

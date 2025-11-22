@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
+import VideoBg from '../assets/video2.mp4';
 
 const colleges = [
     { name: 'NIT Calicut', domain: 'nitc.ac.in' },
@@ -15,7 +16,7 @@ const Signup = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [college, setCollege] = useState(colleges[0].name);
+    const [college, setCollege] = useState('');
     const [error, setError] = useState('');
     const [info, setInfo] = useState('');
     const [loading, setLoading] = useState(false);
@@ -27,6 +28,11 @@ const Signup = () => {
         setError('');
         setLoading(true);
         const selected = colleges.find((c) => c.name === college);
+        if (!selected) {
+            setError('Please select your college');
+            setLoading(false);
+            return;
+        }
         if (selected && !email.endsWith(`@${selected.domain}`)) {
             setError(`Email must end with @${selected.domain}`);
             setLoading(false);
@@ -44,17 +50,27 @@ const Signup = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 py-14 bg-muted">
-            <div className="w-full max-w-md">
-                <div className="mb-6 text-center">
-                    <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1 text-xs font-semibold text-primary border border-slate-200 shadow-sm">
+        <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 py-12">
+            <video
+                className="absolute inset-0 w-full h-full object-cover"
+                src={VideoBg}
+                autoPlay
+                loop
+                muted
+                playsInline
+            />
+            <div className="absolute inset-0 bg-white/70 backdrop-blur-[1px]" />
+
+            <div className="relative w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center z-10">
+                <div className="text-center md:text-left">
+                    <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1 text-xs font-semibold text-primary border border-slate-200 shadow-sm">
                         New here?
                     </p>
-                    <h2 className="mt-3 text-3xl font-extrabold text-slate-900">Create your PeerConnect account</h2>
-                    <p className="text-sm text-slate-600 mt-2">Host or join activities in under a minute.</p>
+                    <h2 className="mt-3 text-4xl font-extrabold text-slate-900">Create your PeerConnect account</h2>
+                    <p className="text-sm text-slate-700 mt-2">Host or join activities in under a minute.</p>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6">
+                <div className="rounded-2xl border border-white/60 bg-white/90 shadow-xl p-6 backdrop-blur-sm">
                     <form className="space-y-5" onSubmit={handleSubmit}>
                         <div className="space-y-2">
                             <label htmlFor="name" className="block text-sm font-medium text-slate-800">
@@ -84,6 +100,7 @@ const Signup = () => {
                                     onChange={(e) => setCollege(e.target.value)}
                                     className="block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/30"
                                 >
+                                    <option value="" disabled>Select your college</option>
                                     {colleges.map((c) => (
                                         <option key={c.name} value={c.name}>{c.name}</option>
                                     ))}
