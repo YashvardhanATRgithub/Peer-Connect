@@ -4,6 +4,7 @@ import Button from '../components/ui/Button';
 import { Users, Calendar, MapPin, ArrowRight, Search } from 'lucide-react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import BackImg from '../../Assets/BackImg.png';
 
 const Landing = () => {
     const [activities, setActivities] = useState([]);
@@ -52,9 +53,20 @@ const Landing = () => {
 
     const visible = filtered.slice(0, 4);
 
+    const year = new Date().getFullYear();
+
     return (
-        <div className="bg-white">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+            className="bg-white"
+            style={{
+                backgroundImage: `linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.7)), url(${BackImg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center center',
+                backgroundRepeat: 'no-repeat',
+                backgroundAttachment: 'fixed',
+            }}
+        >
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
                 {/* Hero */}
                 <div className="grid lg:grid-cols-2 gap-10 items-center pt-12 lg:pt-16">
                     <div className="space-y-6">
@@ -152,7 +164,7 @@ const Landing = () => {
                 </div>
 
                 {/* CTA */}
-                <div className="mb-16 rounded-3xl bg-primary text-white px-8 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-lg">
+                <div className="mb-12 rounded-3xl bg-primary/80 backdrop-blur text-white px-8 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-lg border border-white/30">
                     <div>
                         <p className="text-sm font-semibold uppercase tracking-wide">Start a group</p>
                         <h3 className="text-2xl font-bold mt-1">Bring people together around what you love</h3>
@@ -174,6 +186,10 @@ const Landing = () => {
                         </Link>
                     </div>
                 </div>
+
+                <footer className="text-center text-sm text-slate-500 py-6">
+                    Made with love by Group 13 — All rights reserved © {year}
+                </footer>
             </div>
         </div>
     );

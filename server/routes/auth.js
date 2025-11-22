@@ -35,6 +35,7 @@ router.post('/register', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 avatar: user.avatar,
+                interests: user.interests,
                 token: generateToken(user._id),
             });
         } else {
@@ -60,6 +61,7 @@ router.post('/login', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 avatar: user.avatar,
+                interests: user.interests,
                 token: generateToken(user._id),
             });
         } else {
@@ -79,6 +81,7 @@ router.get('/me', protect, async (req, res) => {
         name: req.user.name,
         email: req.user.email,
         avatar: req.user.avatar,
+        interests: req.user.interests,
     });
 });
 
@@ -95,6 +98,9 @@ router.put('/me', protect, async (req, res) => {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
         user.avatar = req.body.avatar || user.avatar;
+        user.interests = Array.isArray(req.body.interests)
+            ? req.body.interests
+            : (req.body.interests ? String(req.body.interests).split(',').map(i => i.trim()).filter(Boolean) : user.interests);
 
         if (req.body.password) {
             user.password = req.body.password;
@@ -107,6 +113,7 @@ router.put('/me', protect, async (req, res) => {
             name: updatedUser.name,
             email: updatedUser.email,
             avatar: updatedUser.avatar,
+            interests: updatedUser.interests,
             token: generateToken(updatedUser._id),
         });
     } catch (error) {

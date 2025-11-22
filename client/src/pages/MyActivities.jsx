@@ -32,10 +32,12 @@ const MyActivities = () => {
     };
 
     useEffect(() => {
-        if (user) {
-            fetchActivities();
+        if (!user) {
+            navigate('/login');
+            return;
         }
-    }, [user]);
+        fetchActivities();
+    }, [user, navigate]);
 
     const handleJoin = async (id) => {
         try {

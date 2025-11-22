@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
@@ -69,11 +69,22 @@ const Dashboard = () => {
         navigate(`/activities/${id}/edit`);
     };
 
-    const filteredActivities = filter === 'All'
-        ? activities
-        : activities.filter(a => a.category === filter);
+    const applyFilter = (list) =>
+        filter === 'All' ? list : list.filter((a) => a.category === filter);
+
+    const filteredActivities = applyFilter(activities);
 
     const categories = ['All', 'Sports', 'Study', 'Event', 'Other'];
+    const userInterests = (user?.interests || []).map((i) => i.toLowerCase());
+
+    const recommendedActivities = useMemo(() => {
+        if (!userInterests.length) return [];
+        const matchesInterests = activities.filter((a) => {
+            const haystack = `${a.title} ${a.category} ${a.description || ''}`.toLowerCase();
+            return userInterests.some((interest) => haystack.includes(interest));
+        });
+        return applyFilter(matchesInterests);
+    }, [activities, userInterests, filter]);
 
     if (loading) {
         return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -131,6 +142,40 @@ const Dashboard = () => {
                     ))}
                 </div>
             </div>
+
+            {user && recommendedActivities.length > 0 && (
+                <div className="mb-8">
+                    <div className="flex items-center justify-between mb-3 border-b border-slate-200 pb-3">
+                        <div>
+                            <p className="text-sm font-semibold text-primary uppercase tracking-wide">Recommended</p>
+                            <h2 className="text-xl font-bold text-slate-900">Based on your interests</h2>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {recommendedActivities.map((activity) => (
+                            <ActivityCard
+                                key={`rec-${activity._id}`}
+                                activity={activity}
+                                onJoin={handleJoin}
+                                onLeave={handleLeave}
+                                currentUserId={user?._id}
+                                onDelete={handleDelete}
+                                onEdit={handleEdit}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {user && recommendedActivities.length > 0 && (
+                <div className="my-6">
+                    <div className="flex items-center gap-3 text-slate-500 text-sm">
+                        <div className="flex-1 h-px bg-slate-200" />
+                        <span>All activities</span>
+                        <div className="flex-1 h-px bg-slate-200" />
+                    </div>
+                </div>
+            )}
 
             {filteredActivities.length === 0 ? (
                 <div className="text-center py-14 bg-white/80 backdrop-blur rounded-3xl border border-dashed border-slate-200 shadow-md">

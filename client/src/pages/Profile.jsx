@@ -10,6 +10,7 @@ const Profile = () => {
         email: '',
         avatar: '',
         password: '',
+        interests: '',
     });
     const [status, setStatus] = useState('');
     const [loading, setLoading] = useState(false);
@@ -23,6 +24,7 @@ const Profile = () => {
                     email: data.email || '',
                     avatar: data.avatar || '',
                     password: '',
+                    interests: (data.interests || []).join(', '),
                 });
             } catch (err) {
                 setStatus('Failed to load profile');
@@ -47,6 +49,10 @@ const Profile = () => {
                 email: form.email,
                 avatar: form.avatar,
                 password: form.password || undefined,
+                interests: form.interests
+                    .split(',')
+                    .map((i) => i.trim())
+                    .filter(Boolean),
             });
             setStatus('Profile updated!');
             setForm((prev) => ({ ...prev, password: '' }));
@@ -128,6 +134,18 @@ const Profile = () => {
                             className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/30"
                             placeholder="••••••••"
                         />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-800 mb-1">Interests</label>
+                        <input
+                            name="interests"
+                            value={form.interests}
+                            onChange={handleChange}
+                            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/30"
+                            placeholder="e.g., Sports, Tech, Music"
+                        />
+                        <p className="text-xs text-slate-500 mt-1">Comma-separated. Used to recommend activities.</p>
                     </div>
 
                     {status && (
