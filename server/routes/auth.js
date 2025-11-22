@@ -10,6 +10,7 @@ const collegeDomains = {
     'NIT Trichy': 'nitt.edu',
     'IIT Bombay': 'iitb.ac.in',
     'IIT Delhi': 'iitd.ac.in',
+    'Chandigarh University': 'cuchd.in',
 };
 
 const generateToken = (id) => {

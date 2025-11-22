@@ -8,6 +8,7 @@ const colleges = [
     { name: 'NIT Trichy', domain: 'nitt.edu' },
     { name: 'IIT Bombay', domain: 'iitb.ac.in' },
     { name: 'IIT Delhi', domain: 'iitd.ac.in' },
+    { name: 'Chandigarh University', domain: 'cuchd.in' },
 ];
 
 const Signup = () => {
