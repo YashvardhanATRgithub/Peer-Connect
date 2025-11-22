@@ -114,7 +114,36 @@ router.get('/verify/:token', async (req, res) => {
         }
         user.emailVerified = true;
         await user.save();
-        res.json({ message: 'Email verified successfully' });
+        if (process.env.FRONTEND_URL) {
+            return res.redirect(`${process.env.FRONTEND_URL}/login?verified=1`);
+        }
+        const html = `
+        <!doctype html>
+        <html>
+          <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width,initial-scale=1" />
+            <title>Email Verified | PeerConnect</title>
+            <style>
+              body { font-family: Arial, sans-serif; background: #f8fafc; margin:0; padding:0; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+              .card { background:#fff; border-radius:16px; padding:32px; max-width:420px; width:90%; box-shadow:0 20px 50px rgba(15,23,42,0.08); text-align:center; }
+              .pill { display:inline-block; padding:6px 12px; border-radius:999px; background:#ecfeff; color:#0ea5e9; font-weight:600; font-size:12px; letter-spacing:0.02em; }
+              h1 { margin:16px 0 8px; color:#0f172a; font-size:24px; }
+              p { margin:0 0 18px; color:#475569; line-height:1.6; }
+              a.button { display:inline-block; padding:12px 18px; border-radius:12px; background:#0ea5e9; color:#fff; text-decoration:none; font-weight:700; }
+              a.button:hover { background:#0284c7; }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <span class="pill">PeerConnect</span>
+              <h1>Email verified</h1>
+              <p>Your email has been verified successfully. You can now log in and start using PeerConnect.</p>
+              <a class="button" href="/">Go to app</a>
+            </div>
+          </body>
+        </html>`;
+        res.status(200).send(html);
     } catch (error) {
         res.status(400).json({ message: 'Verification failed' });
     }
