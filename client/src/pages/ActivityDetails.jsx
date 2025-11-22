@@ -66,7 +66,7 @@ const ActivityDetails = () => {
 
     return (
         <div className="relative min-h-screen overflow-hidden">
-            <BackgroundVideo overlay="bg-white/70" />
+            <BackgroundVideo overlay="bg-orange-50/70" />
             <div className="max-w-3xl mx-auto px-4 py-8 relative">
                 <Button variant="ghost" className="mb-6" onClick={() => navigate(-1)}>
                     <ArrowLeft className="mr-2 h-4 w-4" /> Back

@@ -28,7 +28,7 @@ const Login = () => {
 
     return (
         <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 py-14">
-            <BackgroundVideo overlay="bg-white/70" />
+            <BackgroundVideo overlay="bg-orange-50/70" />
             <div className="relative w-full max-w-md">
                 <div className="mb-6 text-center">
                     <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1 text-xs font-semibold text-primary border border-slate-200 shadow-sm">

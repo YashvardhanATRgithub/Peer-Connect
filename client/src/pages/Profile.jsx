@@ -76,7 +76,7 @@ const Profile = () => {
 
     return (
         <div className="min-h-screen relative overflow-hidden">
-            <BackgroundVideo overlay="bg-white/70" />
+            <BackgroundVideo overlay="bg-orange-50/70" />
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
                 <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-6 sm:p-8">
                     <h1 className="text-2xl font-bold text-slate-900 mb-2">Your profile</h1>

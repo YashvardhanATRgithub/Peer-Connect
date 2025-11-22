@@ -64,7 +64,7 @@ const EditActivity = () => {
 
     return (
         <div className="min-h-screen relative overflow-hidden">
-            <BackgroundVideo overlay="bg-white/70" />
+            <BackgroundVideo overlay="bg-orange-50/70" />
             <div className="max-w-3xl mx-auto px-4 py-10">
                 <div className="mb-6">
                     <p className="text-sm font-semibold text-primary uppercase tracking-wide">Edit activity</p>

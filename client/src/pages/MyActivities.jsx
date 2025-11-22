@@ -78,7 +78,7 @@ const MyActivities = () => {
 
     return (
         <div className="relative min-h-screen overflow-hidden">
-            <BackgroundVideo overlay="bg-white/70" />
+            <BackgroundVideo overlay="bg-orange-50/70" />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
                 <div className="flex items-center justify-between mb-6">
                     <div>

@@ -61,7 +61,7 @@ const Landing = () => {
 
     return (
         <div className="relative min-h-screen overflow-hidden">
-            <BackgroundVideo overlay="bg-white/70" />
+            <BackgroundVideo overlay="bg-orange-50/70" />
             <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
                 {/* Hero */}
                 <div className="grid lg:grid-cols-2 gap-10 items-center pt-12 lg:pt-16">

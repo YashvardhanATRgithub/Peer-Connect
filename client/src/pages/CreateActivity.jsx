@@ -36,7 +36,7 @@ const CreateActivity = () => {
 
     return (
         <div className="relative min-h-screen overflow-hidden">
-            <BackgroundVideo overlay="bg-white/70" />
+            <BackgroundVideo overlay="bg-orange-50/70" />
             <div className="max-w-3xl mx-auto px-4 py-10 relative">
                 <div className="mb-6">
                     <p className="text-sm font-semibold text-indigo-600 uppercase tracking-wide">Host something new</p>

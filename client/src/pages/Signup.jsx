@@ -59,7 +59,7 @@ const Signup = () => {
                 muted
                 playsInline
             />
-            <div className="absolute inset-0 bg-white/70 backdrop-blur-[1px]" />
+            <div className="absolute inset-0 bg-orange-50/70 backdrop-blur-[1px]" />
 
             <div className="relative w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center z-10">
                 <div className="text-center md:text-left">
