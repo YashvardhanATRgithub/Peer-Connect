@@ -19,9 +19,11 @@ const generateToken = (id) => {
     });
 };
 
-// @desc    Register new user
-// @route   POST /api/auth/register
-// @access  Public
+/**
+ * @desc    Register new user
+ * @route   POST /api/auth/register
+ * @access  Public
+ */
 router.post('/register', async (req, res) => {
     const { name, email, password, college } = req.body;
 
@@ -74,9 +76,11 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// @desc    Authenticate a user
-// @route   POST /api/auth/login
-// @access  Public
+/**
+ * @desc    Authenticate a user
+ * @route   POST /api/auth/login
+ * @access  Public
+ */
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -105,9 +109,11 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// @desc    Verify email
-// @route   GET /api/auth/verify/:token
-// @access  Public
+/**
+ * @desc    Verify email
+ * @route   GET /api/auth/verify/:token
+ * @access  Public
+ */
 router.get('/verify/:token', async (req, res) => {
     try {
         const decoded = jwt.verify(req.params.token, process.env.JWT_SECRET);
@@ -160,9 +166,11 @@ router.get('/verify/:token', async (req, res) => {
     }
 });
 
-// @desc    Get user data
-// @route   GET /api/auth/me
-// @access  Private
+/**
+ * @desc    Get user data
+ * @route   GET /api/auth/me
+ * @access  Private
+ */
 router.get('/me', protect, async (req, res) => {
     res.json({
         _id: req.user._id,
@@ -175,9 +183,11 @@ router.get('/me', protect, async (req, res) => {
     });
 });
 
-// @desc    Update user profile
-// @route   PUT /api/auth/me
-// @access  Private
+/**
+ * @desc    Update user profile
+ * @route   PUT /api/auth/me
+ * @access  Private
+ */
 router.put('/me', protect, async (req, res) => {
     try {
         const user = await User.findById(req.user._id);

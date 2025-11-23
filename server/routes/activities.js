@@ -3,9 +3,11 @@ const router = express.Router();
 const Activity = require('../models/Activity');
 const { protect } = require('../middleware/auth');
 
-// @desc    Get all activities (filtered by college)
-// @route   GET /api/activities
-// @access  Public (requires college query or user)
+/**
+ * @desc    Get all activities (filtered by college)
+ * @route   GET /api/activities
+ * @access  Public (requires college query)
+ */
 router.get('/', async (req, res) => {
     try {
         const college = req.query.college;
@@ -22,9 +24,11 @@ router.get('/', async (req, res) => {
     }
 });
 
-// @desc    Create a new activity
-// @route   POST /api/activities
-// @access  Private
+/**
+ * @desc    Create a new activity
+ * @route   POST /api/activities
+ * @access  Private
+ */
 router.post('/', protect, async (req, res) => {
     const { title, category, date, time, location, description, capacity } = req.body;
 
@@ -38,7 +42,7 @@ router.post('/', protect, async (req, res) => {
             description,
             capacity,
             creator: req.user._id,
-            participants: [req.user._id], // Creator joins automatically? Maybe. Let's say yes.
+            participants: [req.user._id], // Creator joins automatically
             college: req.user.college,
         });
 
@@ -49,9 +53,11 @@ router.post('/', protect, async (req, res) => {
     }
 });
 
-// @desc    Get activity by ID
-// @route   GET /api/activities/:id
-// @access  Public
+/**
+ * @desc    Get activity by ID
+ * @route   GET /api/activities/:id
+ * @access  Public
+ */
 router.get('/:id', async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id)
@@ -69,9 +75,11 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// @desc    Join an activity
-// @route   POST /api/activities/:id/join
-// @access  Private
+/**
+ * @desc    Join an activity
+ * @route   POST /api/activities/:id/join
+ * @access  Private
+ */
 router.post('/:id/join', protect, async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id);
@@ -102,9 +110,11 @@ router.post('/:id/join', protect, async (req, res) => {
     }
 });
 
-// @desc    Leave an activity
-// @route   POST /api/activities/:id/leave
-// @access  Private
+/**
+ * @desc    Leave an activity
+ * @route   POST /api/activities/:id/leave
+ * @access  Private
+ */
 router.post('/:id/leave', protect, async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id);
@@ -143,9 +153,11 @@ router.post('/:id/leave', protect, async (req, res) => {
     }
 });
 
-// @desc    Update an activity
-// @route   PUT /api/activities/:id
-// @access  Private (creator only)
+/**
+ * @desc    Update an activity
+ * @route   PUT /api/activities/:id
+ * @access  Private (creator only)
+ */
 router.put('/:id', protect, async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id);
@@ -170,9 +182,11 @@ router.put('/:id', protect, async (req, res) => {
     }
 });
 
-// @desc    Delete an activity
-// @route   DELETE /api/activities/:id
-// @access  Private (creator only)
+/**
+ * @desc    Delete an activity
+ * @route   DELETE /api/activities/:id
+ * @access  Private (creator only)
+ */
 router.delete('/:id', protect, async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id);

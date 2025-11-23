@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import Button from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
@@ -6,6 +7,7 @@ import BackgroundVideo from '../components/BackgroundVideo';
 
 const Profile = () => {
     const { user, updateProfile } = useAuth();
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         name: '',
         email: '',
@@ -57,6 +59,9 @@ const Profile = () => {
             });
             setStatus('Profile updated!');
             setForm((prev) => ({ ...prev, password: '' }));
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 1000);
         } catch (err) {
             setStatus(err.response?.data?.message || 'Update failed');
         } finally {

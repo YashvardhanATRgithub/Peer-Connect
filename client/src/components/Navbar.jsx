@@ -1,17 +1,30 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from './ui/Button';
-import { LogOut, Search } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
     const handleLogout = () => {
         logout();
         navigate('/');
     };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     return (
         <nav className="sticky top-0 z-30 bg-transparent backdrop-blur-sm">
@@ -27,25 +40,46 @@ const Navbar = () => {
                     <Link to="/dashboard" className="hidden sm:inline-flex text-sm font-semibold text-slate-800 hover:text-primary">
                         Explore
                     </Link>
-                    <Link to="/my-activities" className="hidden sm:inline-flex text-sm font-semibold text-slate-800 hover:text-primary">
-                        My activities
-                    </Link>
                     {user ? (
                         <>
-                            <Link to="/profile">
-                                <div className="flex items-center gap-2 ml-2">
+                            <Link to="/my-activities" className="hidden sm:inline-flex text-sm font-semibold text-slate-800 hover:text-primary">
+                                My activities
+                            </Link>
+                            <div className="relative ml-2" ref={dropdownRef}>
+                                <button
+                                    onClick={() => setIsOpen(!isOpen)}
+                                    className="flex items-center gap-2 focus:outline-none"
+                                >
                                     <img
-                                        className="h-8 w-8 rounded-full object-cover border border-slate-200"
+                                        className="h-9 w-9 rounded-full object-cover border border-slate-200 hover:border-primary transition-colors"
                                         src={user.avatar}
                                         alt={user.name}
                                     />
-                                    <span className="text-sm font-semibold text-slate-800 hidden md:block">{user.name}</span>
-                                </div>
-                            </Link>
-                            <Button variant="secondary" size="sm" onClick={handleLogout} className="text-primary border-primary">
-                                <LogOut className="h-5 w-5" />
-                                <span className="ml-1 hidden sm:inline">Logout</span>
-                            </Button>
+                                    <span className="text-sm font-semibold text-slate-800 hidden md:block hover:text-primary transition-colors">
+                                        {user.name}
+                                    </span>
+                                </button>
+
+                                {isOpen && (
+                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 py-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                                        <Link
+                                            to="/profile"
+                                            className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors"
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            <User className="h-4 w-4" />
+                                            View Profile
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
+                                        >
+                                            <LogOut className="h-4 w-4" />
+                                            Logout
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </>
                     ) : (
                         <>

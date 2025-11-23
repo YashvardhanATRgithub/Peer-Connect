@@ -11,7 +11,11 @@ import ActivityDetails from './pages/ActivityDetails';
 import MyActivities from './pages/MyActivities';
 import Profile from './pages/Profile';
 import EditActivity from './pages/EditActivity';
-import ErrorBoundary from './components/ErrorBoundary';
+import Guidelines from './pages/Guidelines';
+import Safety from './pages/Safety';
+import Support from './pages/Support';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 
 function App() {
   return (
@@ -23,16 +27,17 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/dashboard" element={
-              <ErrorBoundary>
-                <Dashboard />
-              </ErrorBoundary>
-            } />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create-activity" element={<CreateActivity />} />
             <Route path="/activities/:id" element={<ActivityDetails />} />
             <Route path="/activities/:id/edit" element={<EditActivity />} />
             <Route path="/my-activities" element={<MyActivities />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/guidelines" element={<Guidelines />} />
+            <Route path="/safety" element={<Safety />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
           </Routes>
         </div>
       </Router>

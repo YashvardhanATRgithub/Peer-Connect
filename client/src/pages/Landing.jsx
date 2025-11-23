@@ -99,9 +99,6 @@ const Landing = () => {
                             </div>
                         </div>
 
-                        {!user && (
-                            <p className="text-sm text-slate-500">Log in to see activities from your college.</p>
-                        )}
                         {loading ? (
                             <p className="text-sm text-slate-500">Loading activities...</p>
                         ) : (
@@ -122,7 +119,7 @@ const Landing = () => {
                         <div className="relative rounded-3xl border border-slate-200 bg-white shadow-lg p-4 space-y-4">
                             {(!user || visible.length === 0) && !loading && (
                                 <p className="text-sm text-slate-500 px-2 py-4">
-                                    {user ? 'No activities yet. Create the first one!' : 'Log in to see activities from your college.'}
+                                    {user ? 'No activities yet. Create the first one!' : 'Join PeerConnect to see activities.'}
                                 </p>
                             )}
                             {user && visible.map((item, idx) => (
@@ -194,8 +191,49 @@ const Landing = () => {
                     </div>
                 </div>
 
-                <footer className="text-center text-sm text-slate-500 py-6">
-                    Made with love by Group 13 — All rights reserved © {year}
+                {/* Footer */}
+                <footer className="mt-20 border-t border-slate-200 pt-16 pb-8 relative z-10">
+                    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid md:grid-cols-4 gap-8 mb-12">
+                            <div className="col-span-1 md:col-span-2">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <div className="h-8 w-8 rounded-full bg-primary" />
+                                    <span className="text-xl font-extrabold text-slate-900">PeerConnect</span>
+                                </div>
+                                <p className="text-slate-700 font-medium text-sm leading-relaxed max-w-xs">
+                                    The easiest way to find your people on campus. Join groups, host events, and make memories that last a lifetime.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="font-bold text-slate-900 mb-4">Platform</h4>
+                                <ul className="space-y-2 text-sm text-slate-700 font-medium">
+                                    <li><Link to="/dashboard" className="hover:text-primary transition-colors">Explore Events</Link></li>
+                                    <li><Link to="/signup" className="hover:text-primary transition-colors">Create Account</Link></li>
+                                    <li><Link to="/login" className="hover:text-primary transition-colors">Log In</Link></li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 className="font-bold text-slate-900 mb-4">Community</h4>
+                                <ul className="space-y-2 text-sm text-slate-700 font-medium">
+                                    <li><Link to="/guidelines" className="hover:text-primary transition-colors">Guidelines</Link></li>
+                                    <li><Link to="/safety" className="hover:text-primary transition-colors">Safety</Link></li>
+                                    <li><Link to="/support" className="hover:text-primary transition-colors">Support</Link></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="border-t border-slate-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                            <p className="text-sm text-slate-600 font-medium">
+                                © {year} PeerConnect. Made with <span className="text-red-500">♥</span> by Group 13.
+                            </p>
+                            <div className="flex gap-6 text-sm text-slate-600 font-medium">
+                                <Link to="/privacy" className="hover:text-slate-900 transition-colors">Privacy</Link>
+                                <Link to="/terms" className="hover:text-slate-900 transition-colors">Terms</Link>
+                            </div>
+                        </div>
+                    </div>
                 </footer>
             </div>
         </div>
