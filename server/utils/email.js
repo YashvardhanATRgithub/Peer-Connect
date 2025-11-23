@@ -1,56 +1,25 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// Singleton transporter instance
-let transporter = null;
-
-const getTransporter = () => {
-    if (transporter) return transporter;
-
-    const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-
-    if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
-        throw new Error('SMTP configuration missing');
-    }
-
-    // Create reusable transporter object using the default SMTP transport
-    transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: Number(SMTP_PORT) || 587, // Default to 587 if not set
-        secure: false, // Must be false for port 587 (STARTTLS)
-        auth: {
-            user: SMTP_USER,
-            pass: SMTP_PASS,
-        },
-        // Connection pooling settings
-        pool: true,
-        maxConnections: 5,
-        maxMessages: 100,
-        // Timeouts to fail fast if connection hangs
-        socketTimeout: 30000, // 30s
-        connectionTimeout: 30000, // 30s
-    });
-
-    return transporter;
-};
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendMail = async ({ to, subject, html }) => {
     try {
-        const transport = getTransporter();
-        const from = process.env.EMAIL_FROM || process.env.SMTP_USER;
+        if (!process.env.RESEND_API_KEY) {
+            console.warn('RESEND_API_KEY is missing. Email not sent.');
+            return;
+        }
 
-        const info = await transport.sendMail({
-            from,
+        const data = await resend.emails.send({
+            from: 'PeerConnect <notifications@peer-connect.space>',
             to,
             subject,
             html,
         });
 
-        console.log('Message sent: %s', info.messageId);
-        return info;
+        console.log('Email sent successfully:', data);
+        return data;
     } catch (error) {
         console.error('Error sending email:', error);
-        // If the transporter is broken, reset it so next try creates a new one
-        transporter = null;
         throw error;
     }
 };
