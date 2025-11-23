@@ -12,7 +12,7 @@ const Dashboard = () => {
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('All');
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const navigate = useNavigate();
 
     const fetchActivities = async () => {
@@ -20,17 +20,20 @@ const Dashboard = () => {
             const params = {};
             if (user?.college) params.college = user.college;
             const { data } = await api.get('/activities', { params });
-            setActivities(data);
+            setActivities(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Failed to fetch activities', error);
+            setActivities([]);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchActivities();
-    }, []);
+        if (!authLoading) {
+            fetchActivities();
+        }
+    }, [user, authLoading]);
 
     const handleJoin = async (id) => {
         if (!user) {
@@ -89,9 +92,11 @@ const Dashboard = () => {
         return applyFilter(matchesInterests);
     }, [activities, userInterests, filter]);
 
-    if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    if (authLoading || loading) {
+        return <div className="flex justify-center items-center h-screen text-slate-500">Loading...</div>;
     }
+
+    console.log('Rendering Dashboard content. Activities:', activities.length);
 
     const uniqueCategories = new Set(
         activities.map((a) => (a.category ? a.category.toString() : ''))

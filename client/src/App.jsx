@@ -11,6 +11,7 @@ import ActivityDetails from './pages/ActivityDetails';
 import MyActivities from './pages/MyActivities';
 import Profile from './pages/Profile';
 import EditActivity from './pages/EditActivity';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   return (
@@ -22,7 +23,11 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={
+              <ErrorBoundary>
+                <Dashboard />
+              </ErrorBoundary>
+            } />
             <Route path="/create-activity" element={<CreateActivity />} />
             <Route path="/activities/:id" element={<ActivityDetails />} />
             <Route path="/activities/:id/edit" element={<EditActivity />} />

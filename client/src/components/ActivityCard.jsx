@@ -73,10 +73,10 @@ const ActivityCard = ({ activity, onJoin, onLeave, onEdit, onDelete, currentUser
                 <div className="flex items-center">
                     <img
                         className="h-6 w-6 rounded-full mr-2"
-                        src={activity.creator.avatar}
-                        alt={activity.creator.name}
+                        src={activity.creator?.avatar || 'https://ui-avatars.com/api/?name=Unknown'}
+                        alt={activity.creator?.name || 'Unknown'}
                     />
-                    <span className="text-xs text-slate-500">Hosted by {activity.creator.name}</span>
+                    <span className="text-xs text-slate-500">Hosted by {activity.creator?.name || 'Unknown User'}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
