@@ -55,7 +55,7 @@ const Landing = () => {
         }
     };
 
-    const visible = filtered.slice(0, 4);
+    const visible = filtered;
 
     const year = new Date().getFullYear();
 
@@ -116,7 +116,7 @@ const Landing = () => {
 
                     <div className="relative">
                         <div className="absolute -top-6 -left-6 h-full w-full rounded-3xl bg-primary/5" />
-                        <div className="relative rounded-3xl border border-slate-200 bg-white shadow-lg p-4 space-y-4">
+                        <div className="relative rounded-3xl border border-slate-200 bg-white shadow-lg p-4 space-y-4 max-h-[450px] overflow-y-auto pr-2">
                             {(!user || visible.length === 0) && !loading && (
                                 <p className="text-sm text-slate-500 px-2 py-4">
                                     {user ? 'No activities yet. Create the first one!' : 'Join PeerConnect to see activities.'}

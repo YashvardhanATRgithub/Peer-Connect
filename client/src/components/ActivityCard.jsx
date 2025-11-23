@@ -3,7 +3,7 @@ import { Calendar, MapPin, Users, Clock, MessageCircle } from 'lucide-react';
 import Button from './ui/Button';
 import ChatModal from './ChatModal';
 
-const ActivityCard = ({ activity, onJoin, onLeave, onEdit, onDelete, currentUserId }) => {
+const ActivityCard = ({ activity, onJoin, onLeave, onEdit, onDelete, currentUserId, autoOpenChat }) => {
     const getId = (p) => (typeof p === 'string' ? p : p?._id?.toString());
     const currentId = currentUserId?.toString();
     const isJoined = activity.participants.some(p => getId(p) === currentId);
@@ -19,6 +19,12 @@ const ActivityCard = ({ activity, onJoin, onLeave, onEdit, onDelete, currentUser
     const [showModal, setShowModal] = React.useState(false);
     const [showChat, setShowChat] = React.useState(false);
     const [selectedParticipant, setSelectedParticipant] = React.useState(null);
+
+    React.useEffect(() => {
+        if (autoOpenChat) {
+            setShowChat(true);
+        }
+    }, [autoOpenChat]);
 
     return (
         <>
@@ -75,17 +81,17 @@ const ActivityCard = ({ activity, onJoin, onLeave, onEdit, onDelete, currentUser
                     </div>
                 </div>
 
-                <div className="bg-slate-50 px-5 py-3 border-t border-slate-200 flex justify-between items-center">
+                <div className="bg-slate-50 px-5 py-3 border-t border-slate-200 flex flex-wrap justify-between items-center gap-4">
                     <div className="flex items-center">
                         <img
-                            className="h-6 w-6 rounded-full mr-2"
+                            className="h-6 w-6 rounded-full mr-2 shrink-0"
                             src={activity.creator?.avatar || 'https://ui-avatars.com/api/?name=Unknown'}
                             alt={activity.creator?.name || 'Unknown'}
                         />
                         <span className="text-xs text-slate-500">Hosted by {activity.creator?.name || 'Unknown User'}</span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                         {(isJoined || isCreator) && (
                             <Button size="sm" variant="secondary" onClick={() => setShowChat(true)}>
                                 <MessageCircle className="h-4 w-4 mr-1" />

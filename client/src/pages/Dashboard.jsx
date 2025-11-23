@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import ActivityCard from '../components/ActivityCard';
 import Button from '../components/ui/Button';
-import { Plus, Filter } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import BackgroundVideo from '../components/BackgroundVideo';
 
 const Dashboard = () => {
@@ -14,6 +13,8 @@ const Dashboard = () => {
     const [filter, setFilter] = useState('All');
     const { user, loading: authLoading } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const openChatId = location.state?.openChat;
 
     const fetchActivities = async () => {
         try {
@@ -28,6 +29,18 @@ const Dashboard = () => {
             setLoading(false);
         }
     };
+
+    // Clear the openChat state after it's been consumed to prevent persistence on refresh
+    // and to allow re-triggering if the user clicks the notification again
+    useEffect(() => {
+        if (location.state?.openChat) {
+            // Use a small timeout to ensure child components have mounted and processed the prop
+            const timer = setTimeout(() => {
+                navigate(location.pathname, { replace: true, state: {} });
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [location.state, navigate, location.pathname]);
 
     useEffect(() => {
         if (!authLoading) {
@@ -96,8 +109,6 @@ const Dashboard = () => {
         return <div className="flex justify-center items-center h-screen text-slate-500">Loading...</div>;
     }
 
-    console.log('Rendering Dashboard content. Activities:', activities.length);
-
     const uniqueCategories = new Set(
         activities.map((a) => (a.category ? a.category.toString() : ''))
     );
@@ -118,6 +129,7 @@ const Dashboard = () => {
                         </div>
                         <Link to={user ? "/create-activity" : "/signup"}>
                             <Button>
+                                <Plus className="h-4 w-4 mr-2" />
                                 <Plus className="h-4 w-4 mr-2" />
                                 Create event
                             </Button>
@@ -168,6 +180,7 @@ const Dashboard = () => {
                                     currentUserId={user?._id}
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
+                                    autoOpenChat={activity._id === openChatId}
                                 />
                             ))}
                         </div>
@@ -208,6 +221,7 @@ const Dashboard = () => {
                                 currentUserId={user?._id}
                                 onDelete={handleDelete}
                                 onEdit={handleEdit}
+                                autoOpenChat={activity._id === openChatId}
                             />
                         ))}
                     </div>

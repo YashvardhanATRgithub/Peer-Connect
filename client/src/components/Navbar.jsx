@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from './ui/Button';
-import { LogOut, User, Bell } from 'lucide-react';
+import { LogOut, User, Bell, X } from 'lucide-react';
 import io from 'socket.io-client';
 import api from '../api/axios';
 
@@ -82,7 +82,26 @@ const Navbar = () => {
             }
         }
         setShowNotifications(false);
-        // Navigate to activity or chat if possible, for now just stay or go to dashboard
+        navigate('/dashboard', { state: { openChat: notification.activity._id } });
+    };
+
+    const handleClearAll = async () => {
+        try {
+            await api.delete('/notifications');
+            setNotifications([]);
+        } catch (error) {
+            console.error('Failed to clear notifications', error);
+        }
+    };
+
+    const handleDeleteNotification = async (e, id) => {
+        e.stopPropagation(); // Prevent triggering click on parent
+        try {
+            await api.delete(`/notifications/${id}`);
+            setNotifications(prev => prev.filter(n => n._id !== id));
+        } catch (error) {
+            console.error('Failed to delete notification', error);
+        }
     };
 
     return (
@@ -119,8 +138,16 @@ const Navbar = () => {
 
                                 {showNotifications && (
                                     <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-100 py-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                                        <div className="px-4 py-2 border-b border-slate-50 bg-slate-50/50">
+                                        <div className="px-4 py-2 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
                                             <h3 className="text-sm font-bold text-slate-900">Notifications</h3>
+                                            {notifications.length > 0 && (
+                                                <button
+                                                    onClick={handleClearAll}
+                                                    className="text-xs text-red-500 hover:text-red-600 font-medium"
+                                                >
+                                                    Clear all
+                                                </button>
+                                            )}
                                         </div>
                                         <div className="max-h-80 overflow-y-auto">
                                             {notifications.length > 0 ? (
@@ -128,14 +155,23 @@ const Navbar = () => {
                                                     <div
                                                         key={notification._id}
                                                         onClick={() => handleNotificationClick(notification)}
-                                                        className={`px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-50 last:border-0 ${!notification.read ? 'bg-blue-50/30' : ''}`}
+                                                        className={`relative px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-50 last:border-0 ${!notification.read ? 'bg-blue-50/30' : ''} group`}
                                                     >
-                                                        <p className="text-sm text-slate-800">
-                                                            <span className="font-semibold">{notification.sender.name}</span> mentioned you in <span className="font-medium text-primary">{notification.activity.title}</span>
-                                                        </p>
-                                                        <p className="text-xs text-slate-400 mt-1">
-                                                            {new Date(notification.createdAt).toLocaleDateString()} at {new Date(notification.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                        </p>
+                                                        <div className="pr-6">
+                                                            <p className="text-sm text-slate-800">
+                                                                <span className="font-semibold">{notification.sender.name}</span> mentioned you in <span className="font-medium text-primary">{notification.activity.title}</span>
+                                                            </p>
+                                                            <p className="text-xs text-slate-400 mt-1">
+                                                                {new Date(notification.createdAt).toLocaleDateString()} at {new Date(notification.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            </p>
+                                                        </div>
+                                                        <button
+                                                            onClick={(e) => handleDeleteNotification(e, notification._id)}
+                                                            className="absolute top-3 right-2 p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full opacity-0 group-hover:opacity-100 transition-all"
+                                                            title="Delete notification"
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </button>
                                                     </div>
                                                 ))
                                             ) : (
