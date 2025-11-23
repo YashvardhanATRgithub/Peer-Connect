@@ -15,8 +15,8 @@ const getTransporter = () => {
     // Create reusable transporter object using the default SMTP transport
     transporter = nodemailer.createTransport({
         host: SMTP_HOST,
-        port: Number(SMTP_PORT),
-        secure: Number(SMTP_PORT) === 465, // true for 465, false for other ports
+        port: Number(SMTP_PORT) || 587, // Default to 587 if not set
+        secure: false, // Must be false for port 587 (STARTTLS)
         auth: {
             user: SMTP_USER,
             pass: SMTP_PASS,
