@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from './ui/Button';
 import { LogOut, User } from 'lucide-react';
@@ -7,6 +7,7 @@ import { LogOut, User } from 'lucide-react';
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -14,6 +15,11 @@ const Navbar = () => {
         logout();
         navigate('/');
     };
+
+    // Close dropdown on route change
+    useEffect(() => {
+        setIsOpen(false);
+    }, [location.pathname]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
