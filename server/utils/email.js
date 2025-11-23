@@ -82,4 +82,4 @@ const sendVerificationEmail = async ({ to, link }) => {
     });
 };
 
-module.exports = { sendVerificationEmail };
+module.exports = { sendVerificationEmail, sendMail };

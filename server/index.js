@@ -21,5 +21,6 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/activities', require('./routes/activities'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 module.exports = app;

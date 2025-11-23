@@ -2,35 +2,88 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Button from './ui/Button';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, Bell } from 'lucide-react';
+import io from 'socket.io-client';
+import api from '../api/axios';
+
+// Initialize socket
+const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000');
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [notifications, setNotifications] = useState([]);
     const dropdownRef = useRef(null);
+    const notificationRef = useRef(null);
 
     const handleLogout = () => {
         logout();
         navigate('/');
     };
 
-    // Close dropdown on route change
+    // Fetch notifications
+    const fetchNotifications = async () => {
+        if (!user) return;
+        try {
+            const { data } = await api.get('/notifications');
+            setNotifications(data);
+        } catch (error) {
+            console.error('Failed to fetch notifications', error);
+        }
+    };
+
+    useEffect(() => {
+        if (user) {
+            socket.emit('join_user_room', user._id);
+            fetchNotifications();
+
+            socket.on('new_notification', () => {
+                fetchNotifications();
+            });
+
+            return () => {
+                socket.off('new_notification');
+            };
+        }
+    }, [user]);
+
+    // Close dropdowns on route change
     useEffect(() => {
         setIsOpen(false);
+        setShowNotifications(false);
     }, [location.pathname]);
 
-    // Close dropdown when clicking outside
+    // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
+            if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+                setShowNotifications(false);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const unreadCount = notifications.filter(n => !n.read).length;
+
+    const handleNotificationClick = async (notification) => {
+        if (!notification.read) {
+            try {
+                await api.put(`/notifications/${notification._id}/read`);
+                setNotifications(prev => prev.map(n => n._id === notification._id ? { ...n, read: true } : n));
+            } catch (error) {
+                console.error('Failed to mark read', error);
+            }
+        }
+        setShowNotifications(false);
+        // Navigate to activity or chat if possible, for now just stay or go to dashboard
+    };
 
     return (
         <nav className="sticky top-0 z-30 bg-transparent backdrop-blur-sm">
@@ -51,7 +104,51 @@ const Navbar = () => {
                             <Link to="/my-activities" className="hidden sm:inline-flex text-sm font-semibold text-slate-800 hover:text-primary">
                                 My activities
                             </Link>
-                            <div className="relative ml-2" ref={dropdownRef}>
+
+                            {/* Notification Bell */}
+                            <div className="relative ml-2" ref={notificationRef}>
+                                <button
+                                    onClick={() => setShowNotifications(!showNotifications)}
+                                    className="relative p-2 text-slate-600 hover:text-primary transition-colors focus:outline-none"
+                                >
+                                    <Bell className="h-5 w-5" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
+                                    )}
+                                </button>
+
+                                {showNotifications && (
+                                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-100 py-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                                        <div className="px-4 py-2 border-b border-slate-50 bg-slate-50/50">
+                                            <h3 className="text-sm font-bold text-slate-900">Notifications</h3>
+                                        </div>
+                                        <div className="max-h-80 overflow-y-auto">
+                                            {notifications.length > 0 ? (
+                                                notifications.map(notification => (
+                                                    <div
+                                                        key={notification._id}
+                                                        onClick={() => handleNotificationClick(notification)}
+                                                        className={`px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-50 last:border-0 ${!notification.read ? 'bg-blue-50/30' : ''}`}
+                                                    >
+                                                        <p className="text-sm text-slate-800">
+                                                            <span className="font-semibold">{notification.sender.name}</span> mentioned you in <span className="font-medium text-primary">{notification.activity.title}</span>
+                                                        </p>
+                                                        <p className="text-xs text-slate-400 mt-1">
+                                                            {new Date(notification.createdAt).toLocaleDateString()} at {new Date(notification.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        </p>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="px-4 py-8 text-center text-sm text-slate-500">
+                                                    No notifications yet
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="relative ml-1" ref={dropdownRef}>
                                 <button
                                     onClick={() => setIsOpen(!isOpen)}
                                     className="flex items-center gap-2 focus:outline-none"

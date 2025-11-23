@@ -1,6 +1,7 @@
 import React from 'react';
-import { Calendar, MapPin, Users, Clock } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, MessageCircle } from 'lucide-react';
 import Button from './ui/Button';
+import ChatModal from './ChatModal';
 
 const ActivityCard = ({ activity, onJoin, onLeave, onEdit, onDelete, currentUserId }) => {
     const getId = (p) => (typeof p === 'string' ? p : p?._id?.toString());
@@ -16,6 +17,7 @@ const ActivityCard = ({ activity, onJoin, onLeave, onEdit, onDelete, currentUser
     };
 
     const [showModal, setShowModal] = React.useState(false);
+    const [showChat, setShowChat] = React.useState(false);
     const [selectedParticipant, setSelectedParticipant] = React.useState(null);
 
     return (
@@ -84,6 +86,13 @@ const ActivityCard = ({ activity, onJoin, onLeave, onEdit, onDelete, currentUser
                     </div>
 
                     <div className="flex items-center gap-2">
+                        {(isJoined || isCreator) && (
+                            <Button size="sm" variant="secondary" onClick={() => setShowChat(true)}>
+                                <MessageCircle className="h-4 w-4 mr-1" />
+                                Chat
+                            </Button>
+                        )}
+
                         {isCreator && (
                             <>
                                 <Button size="sm" variant="secondary" onClick={() => onEdit(activity._id)}>Edit</Button>
@@ -184,6 +193,16 @@ const ActivityCard = ({ activity, onJoin, onLeave, onEdit, onDelete, currentUser
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Chat Modal */}
+            {showChat && (
+                <ChatModal
+                    activityId={activity._id}
+                    activityTitle={activity.title}
+                    participants={activity.participants}
+                    onClose={() => setShowChat(false)}
+                />
             )}
         </>
     );
