@@ -14,6 +14,7 @@ const Profile = () => {
         avatar: '',
         password: '',
         interests: '',
+        phoneNumber: '',
     });
     const [status, setStatus] = useState('');
     const [loading, setLoading] = useState(false);
@@ -28,6 +29,7 @@ const Profile = () => {
                     avatar: data.avatar || '',
                     password: '',
                     interests: (data.interests || []).join(', '),
+                    phoneNumber: data.phoneNumber || '',
                 });
             } catch (err) {
                 setStatus('Failed to load profile');
@@ -46,6 +48,19 @@ const Profile = () => {
         e.preventDefault();
         setLoading(true);
         setStatus('');
+
+        // Phone number validation
+        if (form.phoneNumber) {
+            const phoneRegex = /^(\+91[\-\s]?)?[6-9]\d{9}$/;
+            // Remove spaces and dashes for validation, but keep original for submission
+            const cleanedPhoneNumber = form.phoneNumber.replace(/[\s-]/g, '');
+            if (!phoneRegex.test(cleanedPhoneNumber)) {
+                setStatus('Please enter a valid Indian phone number (e.g., +91 9876543210)');
+                setLoading(false);
+                return;
+            }
+        }
+
         try {
             await updateProfile({
                 name: form.name,
@@ -56,6 +71,7 @@ const Profile = () => {
                     .split(',')
                     .map((i) => i.trim())
                     .filter(Boolean),
+                phoneNumber: form.phoneNumber,
             });
             setStatus('Profile updated!');
             setForm((prev) => ({ ...prev, password: '' }));
@@ -126,6 +142,18 @@ const Profile = () => {
                                 onChange={handleChange}
                                 required
                                 className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/30"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-800 mb-1">Phone Number</label>
+                            <input
+                                name="phoneNumber"
+                                type="tel"
+                                value={form.phoneNumber}
+                                onChange={handleChange}
+                                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/30"
+                                placeholder="+91 98765 43210"
                             />
                         </div>
 

@@ -99,6 +99,7 @@ router.post('/login', async (req, res) => {
                 interests: user.interests,
                 college: user.college,
                 emailVerified: user.emailVerified,
+                phoneNumber: user.phoneNumber,
                 token: generateToken(user._id),
             });
         } else {
@@ -180,6 +181,7 @@ router.get('/me', protect, async (req, res) => {
         interests: req.user.interests,
         college: req.user.college,
         emailVerified: req.user.emailVerified,
+        phoneNumber: req.user.phoneNumber,
     });
 });
 
@@ -201,6 +203,7 @@ router.put('/me', protect, async (req, res) => {
         user.interests = Array.isArray(req.body.interests)
             ? req.body.interests
             : (req.body.interests ? String(req.body.interests).split(',').map(i => i.trim()).filter(Boolean) : user.interests);
+        user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
 
         if (req.body.college) {
             const col = req.body.college;
@@ -228,6 +231,7 @@ router.put('/me', protect, async (req, res) => {
             interests: updatedUser.interests,
             college: updatedUser.college,
             emailVerified: updatedUser.emailVerified,
+            phoneNumber: updatedUser.phoneNumber,
             token: generateToken(updatedUser._id),
         });
     } catch (error) {

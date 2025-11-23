@@ -17,6 +17,7 @@ router.get('/', async (req, res) => {
 
         const activities = await Activity.find({ college })
             .populate('creator', 'name avatar')
+            .populate('participants', 'name avatar phoneNumber interests')
             .sort({ date: 1 });
         res.json(activities);
     } catch (error) {
@@ -62,7 +63,7 @@ router.get('/:id', async (req, res) => {
     try {
         const activity = await Activity.findById(req.params.id)
             .populate('creator', 'name avatar')
-            .populate('participants', 'name avatar')
+            .populate('participants', 'name avatar phoneNumber interests')
             .populate('waitlist', 'name avatar');
 
         if (activity) {
