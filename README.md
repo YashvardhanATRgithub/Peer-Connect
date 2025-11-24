@@ -5,12 +5,14 @@ Campus-first meetup platform to create, browse, and join activities. React + Vit
 ## Features
 - **Auth & Validation**: Signup/login with JWT, college domain validation (e.g., `@nitc.ac.in`), and email verification via OTP.
 - **Activities**: Create, edit, delete (creator), join/leave/waitlist (members), capacity tracking.
+- **Real-time Chat**: Group chat for each activity using Socket.IO, with mention support (`@username`).
+- **Notifications**: Email notifications for mentions and important updates via **Resend**.
 - **Discovery**: Public activity listing, category filter, search, and landing-page highlights.
 - **Immersive UI**: Modern "Meetup-like" styling with background video overlays, responsive cards, and glassmorphism effects.
 
 ## Stack
-- **Frontend**: React 19, Vite, Tailwind CSS, Axios, React Router.
-- **Backend**: Node.js, Express, Mongoose, JWT, bcrypt, Nodemailer.
+- **Frontend**: React 19, Vite, Tailwind CSS, Axios, React Router, Socket.IO Client.
+- **Backend**: Node.js, Express, Mongoose, JWT, bcrypt, Resend (Email), Socket.IO (Real-time).
 - **DB**: MongoDB Atlas (connection via `MONGO_URI`).
 
 ## Getting Started (local)
@@ -30,8 +32,8 @@ Env required in `server/.env`:
 ```
 MONGO_URI=your_mongo_connection_string
 JWT_SECRET=your_secret
-EMAIL_USER=your_email_address
-EMAIL_PASS=your_email_app_password
+RESEND_API_KEY=re_123456789...  # Get from Resend Dashboard
+FRONTEND_URL=http://localhost:5173
 PORT=5000              # optional
 ```
 
@@ -39,25 +41,42 @@ PORT=5000              # optional
 ```bash
 cd client
 npm install
-echo "VITE_API_BASE=http://localhost:5000/api" > .env.local
+echo "VITE_API_URL=http://localhost:5000" > .env.local
 npm start
 ```
 
 Frontend will open at http://localhost:5173 and talk to the local API.
 
 ## Deployment
-- **API**: Deploy `/server` to a Node host (e.g., Render). Set envs `MONGO_URI`, `JWT_SECRET`, `EMAIL_USER`, `EMAIL_PASS`. Use start command `npm start`.
-- **Web**: Deploy `/client` to Vercel. Set env `VITE_API_BASE=https://<your-api-domain>/api`. Build command `npm run build`, output `dist`.
+
+### Backend (Render)
+- Deploy `/server` to a Node host (e.g., Render).
+- **Build Command:** `npm install`
+- **Start Command:** `npm start` (runs `node local.js`)
+- **Environment Variables:**
+    - `MONGO_URI`: Your MongoDB Atlas connection string.
+    - `JWT_SECRET`: A strong secret key.
+    - `RESEND_API_KEY`: Your Resend API Key.
+    - `FRONTEND_URL`: The URL of your deployed frontend (e.g., `https://peer-connect.space`).
+
+### Frontend (Vercel)
+- Deploy `/client` to Vercel.
+- **Build Command:** `npm run build`
+- **Output Directory:** `dist`
+- **Environment Variables:**
+    - `VITE_API_URL`: The URL of your deployed backend (e.g., `https://peer-connect-xknd.onrender.com`).
+- **Custom Domain:** Add `peer-connect.space` in Vercel Settings -> Domains.
 
 ## Key Routes
 - **API base**: `/api`
-  - **Auth**: `POST /auth/register`, `POST /auth/verify-email`, `POST /auth/login`, `GET /auth/me`, `PUT /auth/me`
-  - **Activities**: `GET /activities`, `GET /activities/:id`, `POST /activities`, `PUT /activities/:id`, `DELETE /activities/:id`, `POST /activities/:id/join`, `POST /activities/:id/leave`
+  - **Auth**: `POST /auth/register`, `POST /auth/verify-email`, `POST /auth/login`, `GET /auth/me`
+  - **Activities**: `GET /activities`, `POST /activities`, `POST /activities/:id/join`
+  - **Chat**: Socket.IO events (`join_room`, `send_message`, `receive_message`)
 
 ## Notes/Tips
 - Ensure CORS on the server allows your frontend origin.
-- Atlas IP allowlist must include your API host.
-- Update `VITE_API_BASE` for each environment (local vs deployed).
+- Atlas IP allowlist must include your API host (0.0.0.0/0 for Render).
+- Update `VITE_API_URL` for each environment (local vs deployed).
 
 ## Scripts
 - **Server**: `npm run dev` (nodemon), `npm start`
