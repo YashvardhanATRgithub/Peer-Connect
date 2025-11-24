@@ -1,0 +1,159 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{setspace}
+
+% Page Geometry
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=25mm,
+ top=25mm,
+}
+
+% Line Spacing
+\setstretch{1.5}
+
+% Title Page Details
+\title{\textbf{PeerConnect} \\ \large A Campus-First Activity & Meetup Platform}
+\author{
+    \textbf{Yashvardhan} (M250570CS) \\
+    \textbf{MVS Venu Madhav} (M250416CS) \\
+    \textbf{Raviraj} (Roll No. TBD)
+}
+\date{\today}
+
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    \Huge
+    \textbf{PeerConnect}
+    
+    \vspace{0.5cm}
+    \LARGE
+    Campus Activity Management System
+    
+    \vspace{1.5cm}
+    
+    \textbf{Project Report}
+    
+    \vspace{1.5cm}
+    
+    \textbf{Submitted by:}
+    
+    \vspace{0.5cm}
+    \Large
+    Yashvardhan (M250570CS) \\
+    MVS Venu Madhav (M250416CS) \\
+    Raviraj
+    
+    \vspace{2cm}
+    
+    \large
+    Department of Computer Science and Engineering \\
+    National Institute of Technology Calicut
+    
+    \vfill
+    
+    \Large
+    \today
+    
+\end{titlepage}
+
+% Abstract
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+PeerConnect is a web-based platform designed to foster student interaction and community building within university campuses. It addresses the challenge of fragmented communication regarding campus activities by providing a centralized hub where students can create, browse, and join various events such as sports matches, study groups, and social meetups. The application leverages the MERN stack (MongoDB, Express.js, React, Node.js) to deliver a responsive and dynamic user experience. Key features include secure authentication with college domain validation, real-time chat functionality for activity coordination, and an automated email notification system for seamless communication.
+
+\newpage
+\tableofcontents
+\newpage
+
+% Introduction
+\section{Introduction}
+In the vibrant ecosystem of a university campus, students often struggle to find peers with similar interests for casual activities. Whether it is finding a fourth player for a badminton match, forming a last-minute study group, or organizing a weekend trek, the existing methods—primarily scattered WhatsApp groups and notice boards—are inefficient and cluttered.
+
+\textbf{PeerConnect} aims to solve this by offering a dedicated platform for "Activities." It allows users to host events, manage participants, and communicate effectively, thereby enhancing the social and co-curricular fabric of campus life.
+
+% Problem Statement
+\section{Problem Statement}
+Current methods of organizing student activities suffer from several drawbacks:
+\begin{itemize}
+    \item \textbf{Information Overload:} WhatsApp groups are often spammy, causing important announcements to be missed.
+    \item \textbf{Lack of Organization:} There is no central repository to view all happening events sorted by time or category.
+    \item \textbf{Privacy Concerns:} Sharing phone numbers in public groups to coordinate events can be unsafe.
+    \item \textbf{Verification Issues:} It is difficult to verify if a participant is a genuine student of the institute.
+\end{itemize}
+
+% Proposed Solution
+\section{Proposed Solution}
+PeerConnect provides a structured solution with the following core modules:
+
+\subsection{User Authentication \& Security}
+\begin{itemize}
+    \item \textbf{Domain-Locked Signup:} Registration is restricted to institute email addresses (e.g., \texttt{@nitc.ac.in}) to ensure a trusted community.
+    \item \textbf{Email Verification:} OTP-based verification using the \textbf{Resend API} ensures the validity of user accounts.
+    \item \textbf{Secure Login:} JSON Web Tokens (JWT) are used for secure, stateless authentication.
+\end{itemize}
+
+\subsection{Activity Management}
+\begin{itemize}
+    \item \textbf{Create \& Manage:} Users can host activities with details like title, description, category (Sports, Study, etc.), date, time, and capacity.
+    \item \textbf{Join/Leave System:} One-click joining with automatic capacity tracking.
+    \item \textbf{Waitlist Logic:} (Future Scope) Handling overflow participants.
+\end{itemize}
+
+\subsection{Real-Time Communication}
+\begin{itemize}
+    \item \textbf{Group Chat:} Each activity has a dedicated chat room powered by \textbf{Socket.IO}.
+    \item \textbf{Mentions:} Users can tag others (e.g., \texttt{@username}), triggering instant notifications.
+\end{itemize}
+
+\subsection{Notification System}
+\begin{itemize}
+    \item \textbf{Email Alerts:} Critical updates and mentions trigger emails sent via a custom domain (\texttt{peer-connect.space}) to ensure high deliverability.
+\end{itemize}
+
+% Technology Stack
+\section{Technology Stack}
+The project is built using the MERN stack, chosen for its scalability and unified JavaScript development environment.
+
+\begin{itemize}
+    \item \textbf{Frontend:} React 19, Vite, Tailwind CSS (for modern, responsive UI).
+    \item \textbf{Backend:} Node.js, Express.js (RESTful API architecture).
+    \item \textbf{Database:} MongoDB Atlas (Cloud-hosted NoSQL database).
+    \item \textbf{Real-Time Engine:} Socket.IO (Bidirectional event-based communication).
+    \item \textbf{Email Service:} Resend API (Transactional emails).
+    \item \textbf{Deployment:} 
+    \begin{itemize}
+        \item Frontend: Vercel (Global CDN).
+        \item Backend: Render (Persistent Node.js hosting).
+    \end{itemize}
+\end{itemize}
+
+% System Architecture
+\section{System Architecture}
+The application follows a Client-Server architecture:
+\begin{enumerate}
+    \item \textbf{Client Layer:} The React application runs in the user's browser, communicating with the backend via HTTP (Axios) for REST APIs and WebSocket for real-time features.
+    \item \textbf{API Layer:} The Express server handles routing, authentication middleware, and business logic.
+    \item \textbf{Data Layer:} Mongoose ODM interacts with MongoDB Atlas to store User, Activity, and Message collections.
+    \item \textbf{External Services:} 
+    \begin{itemize}
+        \item \textbf{Resend:} For delivering emails.
+        \item \textbf{Vercel/Render:} For hosting infrastructure.
+    \end{itemize}
+\end{enumerate}
+
+% Conclusion
+\section{Conclusion}
+PeerConnect successfully bridges the gap between students looking to collaborate and socialize. By providing a verified, organized, and feature-rich platform, it eliminates the chaos of informal messaging groups. The integration of real-time chat and reliable email notifications ensures that users stay engaged and informed. Future enhancements could include mobile application support, calendar integration, and AI-based activity recommendations.
+
+\end{document}
