@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
+import BackgroundVideo from '../components/BackgroundVideo';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -25,8 +26,9 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-            <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+        <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 py-14">
+            <BackgroundVideo overlay="bg-orange-50/70" />
+            <div className="relative w-full max-w-md bg-white rounded-xl shadow-lg p-8">
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-bold text-slate-900">Forgot Password</h2>
                     <p className="text-slate-600 mt-2">Enter your email to reset your password</p>
